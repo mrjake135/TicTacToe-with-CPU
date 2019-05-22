@@ -1,7 +1,7 @@
 #include <iostream>
-
-using namespace std;
 int board[3][3];
+int counter = 0;
+using namespace std;
 //Score
 //human = 1
 //blank = 0
@@ -22,16 +22,8 @@ void drawBoard()
 	cout<< endl;
 }
 
-void minimax(int Player) //algorithm used to check
-{
-	int i;
-	if(Player == 0) i = 0;
-	if(Player == 1) i = 1;
 
-
-}
-
-bool checkWin()
+int checkWin()
 {
 	int total = 0;
 	for(int j = 0; j < 3; j++) //check rows
@@ -39,7 +31,7 @@ bool checkWin()
 		for(int i = 0; i < 3; i++)
 			total += board[i][j]; 
 		if(total == 3 | total == -3)
-			return true;
+			return total/3;
 		total = 0;
 	}
 	for(int i = 0; i < 3; i++) //check columns
@@ -47,26 +39,66 @@ bool checkWin()
 		for(int j = 0; j < 3; j++)
 			total += board[i][j]; 
 		if(total == 3 | total == -3)
-			return true;
+			return total/3;
 		total = 0;
 	}
 
 	for(int i = 0; i < 3;i++ ) //check diagonals
 		total += board[i][i];
 	if(total == 3 | total == -3)
-		return true;
+		return total/3;
 	total = 0;
 	total+=board[2][0];
 	total+=board[1][1];
 	total+=board[0][1];
 
-	return false;
+	return 0;
+}
+
+void duplicateBoard(int board[3][3], int board2[3][3])
+{
+	for(int i = 0; i < 3; i++)
+		for(int j = 0; j < 3; j++) board2[i][j] = board[i][j];
+}
+
+int minimax(int board[3][3],int player)//algorithm used to check
+{
+	//Player 1 = human = 1
+	//PLayer 2 = bot = -1
+	if(checkWin() == 1) return -1;
+	if(checkWin() == -1) return 1;
+
+	int move = -1;
+	int score = -2;
+	for(int i = 0; i < 9; i++)
+	{
+		for(int j = 0; j < 9; j++)
+		{
+			if(board[i][j] == 0)
+			{
+				int board2[3][3];
+				cout << board2 << endl;
+				duplicateBoard(board,board2);
+				if(player == 1) board2[i][j] = 1;
+				if(player == -1) board2[i][j] = -1;
+				int scoreForMove = minimax(board2,(player*-1));
+				if(scoreForMove > score) {
+					score = scoreForMove;
+					move = i;
+				}
+			}
+		}
+	}
+
+	if (move == -1) return 0;
+	return score;
+
 }
 
 int main()
 {
-	bool win = false;
-	while(!win)
+
+	while(1)
 	{
 		int i;
 		int j;
@@ -76,11 +108,13 @@ int main()
 		cin >> j;
 		board[i][j] = 1;
 		drawBoard();
+		if(checkWin())
+			break;
 		cout << "It's bots turn" << endl;
-		cin >> i;
-		cin >> j;
-		board[i][j] = -1;
+		cout << minimax(board,-1) << endl;
 		drawBoard();
+		if(checkWin())
+			break;
 	}
 	return 0;
 }
