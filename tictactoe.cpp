@@ -1,13 +1,13 @@
 #include <iostream>
 
-int* board = new int[9];
+int* board = new int[9]; //create an array based off a 9x9 board
 
 using namespace std;
 //Score
-//human = 1
+//human = -1
 //blank = 0
-//computer = -1
-void drawBoard(int* board)
+//computer = 1
+void drawBoard(int* board) //draws the board based on player
 {
 	for(int i = 0; i < 9; i++)
 	{
@@ -20,7 +20,7 @@ void drawBoard(int* board)
 	cout<< endl;
 }
 
-int checkWin(int* board)
+int checkWin(int* board) //check victory of board 
 {
 	int total = 0;
 	for(int i = 0; i < 3; i++) //check columns
@@ -35,18 +35,17 @@ int checkWin(int* board)
 		if(total == 3 | total == -3) return total/3;
 	}
 	total = 0;
-
+	//check left diagonal
 	total+=board[2];
 	total+=board[4];
 	total+=board[6];
-
 	if(total == 3 | total == -3) return total/3;
-
+	//check right diagonal
 	total = 0;
 	total+=board[0];
 	total+=board[4];
 	total+=board[8];
-
+	//check tie
 	if(total == 3 | total == -3) return total/3;
 	int move = -1;
 	for(int i = 0; i < 9; ++i) 
@@ -56,7 +55,7 @@ int checkWin(int* board)
 	return -2;
 }
 
-void duplicateBoard(int* board, int* board2)
+void duplicateBoard(int* board, int* board2) //memcopy the arrays
 {
 	for(int i = 0; i < 9; i++) board2[i] = board[i];
 }
